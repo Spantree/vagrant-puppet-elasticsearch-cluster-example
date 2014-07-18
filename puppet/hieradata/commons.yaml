@@ -1,0 +1,5 @@
+domain: &domain "dev.test.com"
+cluster: &cluster "test"
+nodes:
+  es1: {addr: 192.168.190.101, type: EsNode, domain: *domain, state: 1 , cluster: *cluster, fqdn: es1.dev.test.com}
+  es2: {addr: 192.168.190.111, type: EsNode, domain: *domain, state: 1 , cluster: *cluster, fqdn: es2.dev.test.com}
