@@ -8,6 +8,9 @@ include java7
 
 class { 'elasticsearch':
   package_url => "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.0.0.deb",
+  init_defaults => {
+    'ES_HEAP_SIZE' => '2gb'
+  },
   config      => {
     'node' => {
       'name' => $hostname
@@ -19,11 +22,26 @@ class { 'elasticsearch':
       'publish_host'  => $ipaddress_eth1
     },
     'cluster' => {
-      'name' => $nodes[$hostname]['cluster']
+      'name' => $nodes[$hostname]['cluster'],
+      'routing' => {
+        'allocation' => {
+          'cluster_concurrent_rebalance': 2
+        }
+      }
     },
     'marvel' => {
       'agent' => {
         'enabled' => "true"
+      }
+    },
+    'bootstrap' => {
+      'mlockall' => 'true'
+    },
+    'indices' => {
+      'fielddata' => {
+        'cache' => {
+          'size': '25%'
+        }
       }
     },
   },
