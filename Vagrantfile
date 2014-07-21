@@ -3,7 +3,6 @@ require 'yaml'
 yml = YAML.load_file("puppet/hieradata/commons.yaml")
 nodes=yml['nodes']
 nodes.select {|key,value| value['state'] == 1}.each do |key, value|
-
   Vagrant.configure("2") do |config|
     config.vm.box = key
     hostname = key
@@ -11,6 +10,10 @@ nodes.select {|key,value| value['state'] == 1}.each do |key, value|
     config.vm.box_url = "http://files.vagrantup.com/precise64.box"
     config.vm.synced_folder '.', "/usr/local/src/test-es/", :create => 'true'
 
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+    config.hostmanager.ignore_private_ip = false
+    config.hostmanager.include_offline = true
 
     config.vm.define key do |key|
       key.vm.hostname = hostname
@@ -24,7 +27,7 @@ nodes.select {|key,value| value['state'] == 1}.each do |key, value|
       key.vm.provision :shell, :path => 'shell/librarian-puppet-vagrant.sh', :args => '/vagrant/shell'
       key.vm.provision :puppet do |puppet|
         puppet.manifests_path = "puppet/manifests"
-        puppet.module_path    = "puppet/modules"
+        # puppet.module_path    = "puppet/modules"
         puppet.hiera_config_path = "puppet/hiera.yaml"
         puppet.manifest_file = "base.pp"
         puppet.facter = {
