@@ -2,6 +2,8 @@ $nodes = hiera('nodes', false)
 
 $es_settings = hiera('elasticsearch', false)
 
+$floored_heap = floor($memorysize_mb * 0.6)
+
 notify { $nodes[$hostname]['fqdn']: }
 
 include java7
@@ -9,7 +11,7 @@ include java7
 class { 'elasticsearch':
   package_url => "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${es_settings['version']}.deb",
   init_defaults => {
-    'ES_HEAP_SIZE' => "${memorysize_mb*0.6}"
+    'ES_HEAP_SIZE' => "${floored_heap}m"
   },
   status => enabled,
   config => {
