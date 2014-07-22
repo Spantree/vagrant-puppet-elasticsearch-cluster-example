@@ -10,7 +10,7 @@ nodes:
     state: 1
     cluster: *cluster
     fqdn: es1.dev.test.com
-    cluster_hosts: "192.168.190.111[9200-9300]"
+    cluster_hosts: "192.168.190.111[9300]"
   es2:
     addr: 192.168.190.111
     type: EsNode
@@ -18,4 +18,4 @@ nodes:
     state: 1
     cluster: *cluster
     fqdn: es2.dev.test.com
-    cluster_hosts: "192.168.190.101[9200-9300]"
+    cluster_hosts: "192.168.190.101[9300]"
