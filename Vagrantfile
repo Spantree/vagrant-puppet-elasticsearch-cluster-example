@@ -31,7 +31,9 @@ nodes.select {|key,value| value['state'] == 1}.each do |key, value|
         puppet.hiera_config_path = "puppet/hiera.yaml"
         puppet.manifest_file = "base.pp"
         puppet.facter = {
-          "host_environment" => "Vagrant"
+          "host_environment" => "Vagrant",
+          "vm_type" => "vagrant",
+          "enable_marvel_agent" => false
         }
         puppet.options = "--verbose"
       end
