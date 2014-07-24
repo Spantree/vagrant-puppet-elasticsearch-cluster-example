@@ -4,7 +4,7 @@ yml = YAML.load_file("puppet/hieradata/commons.yaml")
 nodes=yml['nodes']
 nodes.select {|key,value| value['state'] == 1}.each do |key, value|
   Vagrant.configure("2") do |config|
-    config.vm.box = key
+    config.vm.box = 'precise64'
     hostname = key
     addr = value['addr']
     config.vm.box_url = "http://files.vagrantup.com/precise64.box"
