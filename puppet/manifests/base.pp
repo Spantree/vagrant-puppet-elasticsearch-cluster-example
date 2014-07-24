@@ -8,6 +8,11 @@ notify { $nodes[$hostname]['fqdn']: }
 
 include java7
 
+$elasticsearch_publish_host = $vm_type ? {
+  'vagrant' => $ipaddress_eth1,
+  default   => $ipaddress_eth0
+}
+
 class { 'elasticsearch':
   package_url => "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${es_settings['version']}.deb",
   init_defaults => {
@@ -34,7 +39,7 @@ class { 'elasticsearch':
       max_content_length => '500mb'
     },
     network => {
-      publish_host => $ipaddress_eth1
+      publish_host => $elasticsearch_publish_host
     },
     cluster => {
       name => $nodes[$hostname]['cluster'],
@@ -46,7 +51,7 @@ class { 'elasticsearch':
     },
     marvel => {
       agent => {
-        enabled => true
+        enabled => $enable_marvel_agent
       }
     },
     bootstrap => {
@@ -89,8 +94,11 @@ nginx::resource::vhost { $nodes[$hostname]['fqdn']:
   auth_basic => "Restricted",
   auth_basic_user_file => "/etc/nginx/.htpasswd"
 }
+
+# username: elasticsearch
+# password: admin
 htpasswd { 'elasticsearch':
-  cryptpasswd => "NOTSET",
+  cryptpasswd => "$apr1$Qy54BjRt$2yrD.Y8vY3jOkvDhLq/Tj/",
   target      => '/etc/nginx/.htpasswd',
   require     => Class['nginx']
 }
