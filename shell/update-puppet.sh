@@ -26,16 +26,20 @@ if [[ ! -f /var/puppet-init/update-puppet ]]; then
     touch /var/puppet-init/update-puppet
     echo "Created empty file /var/puppet-init/update-puppet"
   elif [ "$OS" == 'centos' ]; then
-    echo "Downloading http://yum.puppetlabs.com/el/${RELEASE}/products/x86_64/puppet-3.4.3-1.el6.noarch.rpm"
-    yum -y --nogpgcheck install "http://yum.puppetlabs.com/el/${RELEASE}/products/x86_64/puppet-3.4.3-1.el6.noarch.rpm" >/dev/null
-    echo "Finished downloading http://yum.puppetlabs.com/el/${RELEASE}/products/x86_64/puppet-3.4.3-1.el6.noarch.rpm"
+
+    echo "Adding Puppet Repository"
+    yum -y --nogpgcheck install "http://yum.puppetlabs.com/el/6/products/i386/puppetlabs-release-6-7.noarch.rpm" >/dev/null
+    echo "Finished adding Puppet Repository"
+    #echo "Downloading http://yum.puppetlabs.com/el/${RELEASE}/products/x86_64/puppet-3.4.3-1.el6.noarch.rpm"
+    #yum -y --nogpgcheck install "http://yum.puppetlabs.com/el/${RELEASE}/products/x86_64/puppet-3.4.3-1.el6.noarch.rpm" >/dev/null
+    #echo "Finished downloading http://yum.puppetlabs.com/el/${RELEASE}/products/x86_64/puppet-3.4.3-1.el6.noarch.rpm"
 
     echo "Running update-puppet yum update"
     yum -y update >/dev/null
     echo "Finished running update-puppet yum update"
 
     echo "Installing/Updating Puppet to to version 3.4.x"
-    yum -y install puppet >/dev/null
+    yum -y install puppet-3.4.3 >/dev/null
     PUPPET_VERSION=$(puppet help | grep 'Puppet v')
     echo "Finished installing/updating puppet to latest version: $PUPPET_VERSION"
 

@@ -6,7 +6,7 @@ $floored_heap = floor($memorysize_mb * 0.6)
 
 notify { $nodes[$hostname]['fqdn']: }
 
-include java7
+include java
 
 $elasticsearch_publish_host = $vm_type ? {
   'vagrant' => $ipaddress_eth1,
@@ -14,8 +14,10 @@ $elasticsearch_publish_host = $vm_type ? {
 }
 
 class { 'elasticsearch':
-  package_url => "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${es_settings['version']}.deb",
-  init_defaults => {
+  #package_url  => "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${es_settings['version']}.deb",
+  manage_repo  => true,
+  repo_version => '1.2',
+  init_defaults    => {
     'ES_HEAP_SIZE' => "${floored_heap}m"
   },
   status => enabled,
@@ -66,7 +68,7 @@ class { 'elasticsearch':
     },
 
   },
-  require => Class['java7']
+  require => Class['java']
 }
 
 #this can be done on a single call
