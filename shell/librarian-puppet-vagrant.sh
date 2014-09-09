@@ -71,12 +71,21 @@ cd "$PUPPET_DIR"
 
 if [[ ! -f /var/puppet-init/librarian-puppet-installed ]]; then
     echo 'Installing librarian-puppet'
+  if [ "$OS" == 'ubuntu' ]; then
     apt-get -y remove ruby ruby1.8
     apt-get -y install ruby1.9.1-dev ruby1.9.1-dev
-    gem install librarian-puppet >/dev/null
     apt-get -y autoremove
-    echo 'Finished installing librarian-puppet'
 
+  fi
+  if [ "$OS" == 'centos' ] || [ "$OS" == 'redhat' ]; then
+    yum install -q -y ruby rubygems
+  fi
+  if [ "$OS" == 'centos' ] || [ "$OS" == 'redhat' ]; then
+    gem install librarian-puppet -v 1.0.3 --no-ri --no-rdoc
+  else
+    gem install librarian-puppet >/dev/null
+  fi
+    echo 'Finished installing librarian-puppet'
     echo 'Running initial librarian-puppet'
     librarian-puppet install --clean >/dev/null
     echo 'Finished running initial librarian-puppet'
@@ -104,4 +113,6 @@ fi
 #  gem install hiera-eyaml-gpg
 #fi
 #sha1sum Puppetfile > /var/puppet-init/Puppetfile.sha1
- apt-get install --force-yes -y puppet=3.4.3-1puppetlabs1 puppet-common=3.4.3-1puppetlabs1 
+if [ "$OS" == 'ubuntu' ]; then
+  apt-get install --force-yes -y puppet=3.4.3-1puppetlabs1 puppet-common=3.4.3-1puppetlabs1 
+fi
